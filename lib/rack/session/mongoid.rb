@@ -27,7 +27,7 @@ module Rack
       def generate_sid
         loop do
           sid = super
-          break sid unless RackSession.where(sid: sid).asc(:_id).first
+          break sid unless _exists?(sid)
         end
       end
 
@@ -37,7 +37,7 @@ module Rack
           unless sid && session
             sid = generate_sid
             session = {}
-            _put sid, session
+            _set sid, session
           end
           [sid, session]
         end
@@ -70,7 +70,6 @@ module Rack
         model = _exists?(sid) || RackSession.new(sid: sid)
         model.data = session
         model.save!
-        model
       end
 
       def _get(sid)
