@@ -14,12 +14,11 @@ module Rack
       index({ sid: 1 }, unique: true)
     end
 
-
     class Mongoid < Abstract::ID
       attr_reader :mutex, :pool
 
       DEFAULT_OPTIONS = Abstract::ID::DEFAULT_OPTIONS.merge drop: false
-      def initialize(app, options={})
+      def initialize(app, options = {})
         super
         @mutex = Mutex.new
         RackSession.create_indexes
@@ -34,15 +33,17 @@ module Rack
 
       def get_session(env, sid)
         with_lock(env) do
-          unless sid and session = _get(sid)
-            sid, session = generate_sid, {}
+          session = _get(sid)
+          unless sid && session
+            sid = generate_sid
+            session = {}
             _put sid, session
           end
           [sid, session]
         end
       end
 
-      def set_session(env, session_id, new_session, options)
+      def set_session(env, session_id, new_session, _options)
         with_lock(env) do
           _put session_id, new_session
           session_id
@@ -73,9 +74,8 @@ module Rack
       end
 
       def _get(sid)
-        if model = _exists?(sid)
-          model.data
-        end
+        model = _exists?(sid)
+        model.data if model
       end
 
       def _delete(sid)
