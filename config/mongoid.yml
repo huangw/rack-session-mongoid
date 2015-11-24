@@ -1,0 +1,25 @@
+development:
+  # Configure available database clients. (required)
+  clients:
+    default:
+      hosts:
+        - localhost:27017
+      database: rack-session-mongoid_dev
+production:
+  clients:
+    default:
+      hosts:
+        - localhost:27017
+      database: rack-session-mongoid
+test:
+  clients:
+    default:
+      hosts:
+        - localhost:27017
+      database: rack-session-mongoid_test
+options:
+  allow_dynamic_fields: false
+  include_type_for_serialization: true # only for #to_json
+  scope_overwrite_exception: true
+  use_utc: true # convert to local time on the client / ui side
+  safe: true
