@@ -4,11 +4,10 @@ require 'rack/session/mongoid'
 
 Mongoid.load!('config/mongoid.yml', ENV['RACK_ENV'] || :development)
 
-class SimpleApp
+class SampleApp
   def self.call(env)
-    env["rack.session"]["counter"] ||= 0
-    env["rack.session"]["counter"] = env["rack.session"]["counter"] + 1
-    # ap env['rack.session']['counter']
+    env['rack.session']['counter'] ||= 0
+    env['rack.session']['counter'] += 1
 
     [200, # 200 indicates success
      { 'Content-Type' => 'text/plain' },
@@ -19,4 +18,4 @@ end
 
 # use Rack::Session::Pool
 use Rack::Session::Mongoid
-run SimpleApp
+run SampleApp
